@@ -1,18 +1,25 @@
 using Domain.Commands.Inputs;
 using Domain.Commands.Results;
 using Domain.Entities;
+using Domain.Repositories;
 
 namespace Domain.Handlers;
 
 public class GerarCartaoVirtualHandler
 {
-    public GerarCartaoVirtualCommandResult Handle(GerarCartaoVirtualCommand command)
+    private readonly ICartaoVirtualRepository _repository;
+    public GerarCartaoVirtualHandler(ICartaoVirtualRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public CommandResult Handle(GerarCartaoVirtualCommand command)
     {
         // Validar command
         command.Validar();
 
         if (!command.IsValid)
-            return null;
+            return new CommandResult(false, "Email inválido", command.Notifications);
 
         // Gerar número de cartão aleatório
         var numeroCartao = "";
@@ -27,8 +34,17 @@ public class GerarCartaoVirtualHandler
         // Criar entidade e salvar no banco
         var cartaoVirtual = new CartaoVirtual(command.Email, numeroCartao, DateTime.Now);
 
+        try
+        {
+            _repository.AdicionarCartaoVirtual(cartaoVirtual);
+        }
+        catch (Exception ex)
+        {
+            
+            return new CommandResult(false, "Erro ao salvar os dados", ex.Message);
+        }
+
         // Criar command result e retornar
-        var commandResult = new GerarCartaoVirtualCommandResult(command.Email, numeroCartao);
-        return commandResult;
+        return new CommandResult(true, "Requisição realizada com sucesso!", new { command.Email, numeroCartao });
     }
 }

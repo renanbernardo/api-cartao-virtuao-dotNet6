@@ -1,12 +1,17 @@
+using Shared.Commands;
+
 namespace Domain.Commands.Results;
 
-public class GerarCartaoVirtualCommandResult
+public class CommandResult : ICommandResult
 {
-    public GerarCartaoVirtualCommandResult(string email, string numeroCartao)
+    public CommandResult(bool success, string message, object data)
     {
-        Email = email;
-        NumeroCartao = numeroCartao;
+        Success = success;
+        Message = message;
+        Data = data;
     }
-    public string Email { get; set; }
-    public string NumeroCartao { get; set; }
+
+    public bool Success { get; set; }
+    public string Message { get; set; }
+    public object Data { get; set; }
 }

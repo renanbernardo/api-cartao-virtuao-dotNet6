@@ -27,7 +27,7 @@ public class CartaoVirtualController : Controller
 
     [HttpPost]
     [Route("")]
-    public ICommandResult Post([FromBody] GerarCartaoVirtualCommand)
+    public ICommandResult Post([FromBody] GerarCartaoVirtualCommand command)
     {
         var handler = new GerarCartaoVirtualHandler(_repository);
         return handler.Handle(command);

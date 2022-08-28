@@ -1,6 +1,7 @@
 using Domain.Commands.Inputs;
 using Domain.Commands.Results;
 using Domain.Handlers;
+using Tests.Repositories;
 
 namespace Tests.HandlerTests;
 
@@ -13,10 +14,10 @@ public class GerarCartaoVirtualHandlerTests
         var command = new GerarCartaoVirtualCommand();
         command.Email = "teste.teste.com";
 
-        var gerarCartaoHandler = new GerarCartaoVirtualHandler();
+        var gerarCartaoHandler = new GerarCartaoVirtualHandler(new FakeRepository());
         var result = gerarCartaoHandler.Handle(command);
 
-        Assert.AreEqual("Email inválido", "");
+        Assert.AreEqual("Email inválido", result.Message);
     }
 
     [TestMethod]
@@ -25,9 +26,9 @@ public class GerarCartaoVirtualHandlerTests
         var command = new GerarCartaoVirtualCommand();
         command.Email = "renan.brnrd@gmail.com";
 
-        var gerarCartaoHandler = new GerarCartaoVirtualHandler();
+        var gerarCartaoHandler = new GerarCartaoVirtualHandler(new FakeRepository());
         var result = gerarCartaoHandler.Handle(command);
 
-        Assert.AreEqual(true, false);
+        Assert.AreEqual(true, result.Success);
     }
 }
